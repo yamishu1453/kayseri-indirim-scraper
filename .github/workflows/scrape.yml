@@ -2,22 +2,32 @@ name: Günlük Çoklu-Site Scraper
 
 on:
   schedule:
-    - cron: '0 7 * * *'
-  workflow_dispatch:
+    - cron: '0 7 * * *'      # UTC 07:00 → TSİ 10:00
+  workflow_dispatch:        # elle de tetikle
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Kodları çek
+        uses: actions/checkout@v3
+
+      - name: Python kurulumu
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      - run: |
-          pip install --upgrade pip
+
+      - name: Bağımlılıkları yükle
+        run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - run: python run.py
-      - uses: actions/upload-artifact@v3
+
+      - name: Scraper çalıştır
+        run: python run.py
+
+      - name: Çıktıyı sakla
+        uses: actions/upload-artifact@v4
         with:
           name: aktuel-json
           path: aktuel.json
